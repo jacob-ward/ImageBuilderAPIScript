@@ -10,7 +10,8 @@ config.read("secrets.cfg")
 dockerRegistryUsername = config["secrets"]["harbor_username"]
 dockerRegistryToken = config["secrets"]["harbor_token"]
 repoOwner = config["github"]["repo_owner"]
-repoName =config["github"]["repo_name"]
+repoName = config["github"]["repo_name"]
+actionName = config["github"]["action_name"]
 token = config["github"]["access_token"]
 
 
@@ -33,7 +34,7 @@ def put_request(value, keyId,secretName):
     param = {"encrypted_value":value, "key_id":keyId}
     response = requests.put(url,headers=header, data=json.dumps(param))
 def upload_action():
-    url = "https://api.github.com/repos/{}/{}/contents/.github/workflows/FinalTest.yaml".format(repoOwner,repoName)
+    url = "https://api.github.com/repos/{}/{}/contents/.github/workflows/{}.yaml".format(repoOwner,repoName,actionName)
     header = {"Authorization": f"token {token}"}
     with open('action_raw.yaml', 'r') as file:
         data_raw = file.read()
