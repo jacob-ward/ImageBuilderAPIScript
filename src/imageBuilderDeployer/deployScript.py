@@ -65,6 +65,7 @@ def main():
     content = get_file_action(header)
     sha = get_sha(base_url,header,action_name)
     upload_action(base_url,header,action_name,content,sha)
+    upload_secrets(secrets_dict, base_url,header)
 
 
 if __name__ == "__main__":
