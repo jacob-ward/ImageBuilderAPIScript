@@ -1,3 +1,6 @@
 image-virtual
 config.ini
 .vscode
+*.egg-info
+dist
+__pycache__
