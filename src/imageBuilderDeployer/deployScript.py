@@ -11,7 +11,7 @@ from nacl import encoding, public
 
 def get_config(path_to_config):
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.path.dirname(__file__), path_to_config))
+    config.read(os.path.join(os.getcwd(), path_to_config))
     config_github = dict(config.items("github"))
     url = f"https://api.github.com/repos/{config_github.get('repo_owner')}/{config_github.get('repo_name')}/"
     header = {
