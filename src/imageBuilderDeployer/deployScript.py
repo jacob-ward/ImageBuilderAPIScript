@@ -36,16 +36,24 @@ def upload_secrets(secrets, base_url, header):
         data = {"encrypted_value":encrypted_value, "key_id":public_key[1]}
         response = requests.put(base_url + f"actions/secrets/{i}",headers=header, data=json.dumps(data))
 
-def upload_action(base_url,header,action_name,content):
-    param = {"message":"API commit", "content":content}
-    dataJson = json.dumps(param)
-    response = requests.put(base_url + f"contents/.github/workflows/{action_name}.yaml",headers=header,data=dataJson)
+def upload_action(base_url,header,action_name,content,sha):
+    if sha != None:
+        param = {"message":"Update action file", "content":content, "sha":sha}
+    else:
+        param = {"message":"Upload action file", "content":content}
+    data_json = json.dumps(param)
+    response = requests.put(base_url + f"contents/.github/workflows/{action_name}.yaml",headers=header,data=data_json)
     return response
 
-def get_file_action(base_url, header,action_name):
+def get_file_action(header):
     response = requests.get("https://api.github.com/repos/vovsike/ImageBuilderAPIScript/contents/action_raw.yaml", headers=header)
     content = ast.literal_eval(response.content.decode("utf-8")).get("content")
     return content
+
+def get_sha(base_url, header, action_name):
+    response = requests.get(base_url + f"contents/.github/workflows/{action_name}.yaml", headers=header)
+    if response.status_code == 200 and response.json().get("type"):
+        return response.json().get("sha")
 
 def main():
     if len(sys.argv) < 2:
@@ -54,8 +62,9 @@ def main():
     else:
         config_path = sys.argv[-1]
     secrets_dict, base_url, header, action_name = get_config(config_path)
-    content = get_file_action(base_url,header,action_name)
-    upload_action(base_url,header,action_name,content)
+    content = get_file_action(header)
+    sha = get_sha(base_url,header,action_name)
+    upload_action(base_url,header,action_name,content,sha)
 
 
 if __name__ == "__main__":
