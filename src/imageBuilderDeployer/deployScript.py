@@ -1,10 +1,12 @@
 import configparser
 import os
+from pathlib import Path
 import sys
 import requests
 import json
 import base64
 import ast
+import argparse
 from base64 import b64encode
 from nacl import encoding, public
 
@@ -12,13 +14,16 @@ from nacl import encoding, public
 def get_config(path_to_config):
     config = configparser.ConfigParser()
     config.read(os.path.join(os.getcwd(), path_to_config))
-    config_github = dict(config.items("github"))
+    try:
+        config_github = dict(config.items("github"))
+        secrets_dict = dict(config.items("secrets"))
+    except configparser.NoSectionError:
+        raise ValueError("Wrong config file, no sections github or secrets")
     url = f"https://api.github.com/repos/{config_github.get('repo_owner')}/{config_github.get('repo_name')}/"
     header = {
         "Authorization": f"token {config_github.get('access_token')}"
         }
     action_name = config_github.get("action_name")
-    secrets_dict = dict(config.items("secrets"))
     return secrets_dict, url, header, action_name
 
 def encrypt(public_key: str, secret_value: str) -> str:
@@ -56,12 +61,16 @@ def get_sha(base_url, header, action_name):
         return response.json().get("sha")
 
 def main():
-    if len(sys.argv) < 2:
-        print("Usage python -m imageBuilderDeployer <configfile>")
-        sys.exit(1)
-    else:
-        config_path = sys.argv[-1]
-    secrets_dict, base_url, header, action_name = get_config(config_path)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("config", help="path to config", type=Path)
+    args = parser.parse_args()
+    if args.config != None:
+        config_path = args.config
+        try:
+            secrets_dict, base_url, header, action_name = get_config(config_path)
+        except ValueError as e:
+            print("Exception was caught during loading of config file, stopping")
+            print(e)
     content = get_file_action(header)
     sha = get_sha(base_url,header,action_name)
     upload_action(base_url,header,action_name,content,sha)
