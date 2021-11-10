@@ -43,7 +43,7 @@ def upload_action(base_url,header,action_name,content):
     return response
 
 def get_file_action(base_url, header,action_name):
-    response = requests.get(base_url + f"contents/.github/workflows/{action_name}.yaml", headers=header)
+    response = requests.get("https://api.github.com/repos/vovsike/ImageBuilderAPIScript/contents/action_raw.yaml", headers=header)
     content = ast.literal_eval(response.content.decode("utf-8")).get("content")
     return content
 
