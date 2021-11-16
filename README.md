@@ -1,4 +1,9 @@
 # Installation
+TODO
+
+## Supported versions
+To build and rus this package you will need to use python >=3.6
+
 ## How to build
 To build this python package you will need to have python build installed as a package. To do this please run `python -m pip install build`. To build ImageBuilderAPI navigate to root directory of this repo and run `python -m build`. When build finfishes new directory will appear name `dist`
 
