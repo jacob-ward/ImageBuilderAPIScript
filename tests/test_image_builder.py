@@ -1,7 +1,7 @@
 from decimal import DivisionByZero
 import pytest
 import pathlib
-from imageBuilderDeployer.deployScript import get_config, get_file_action
+from image_builder_deployer.deploy_script import get_config, get_file_action
 
 def test_config_returns_correct_values():
     path = pathlib.Path.cwd() / 'tests' / 'data' / 'test_config.ini'
