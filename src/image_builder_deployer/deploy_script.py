@@ -94,33 +94,6 @@ def upload_secrets(secrets: 'dict[str,str]', base_url: str, header: 'dict[str, s
             raise secret_upload_e
 
 
-def upload_action(base_url: str, header: 'dict[str,str]', action_name: str,
-                  content: str, sha: Union[str, None]) -> None:
-    """Uploads action file to github repo
-
-        Args:
-            base_url (str): The url to the repo
-            header (dict[str,str]): Header with auth token
-            action_name (str): The name of the action file
-            content (str): The content of the aciton file
-            sha (Union[str, None]): Sha of the action file, needed for updating the file
-
-        Raises:
-            upload_action_e: Raised when no aciton been uploaded
-    """
-    if sha is not None:
-        param = {"message": "Update action file", "content": content, "sha": sha}
-    else:
-        param = {"message": "Upload action file", "content": content}
-    data_json = json.dumps(param)
-    response = requests.put(base_url + f"contents/.github/workflows/{action_name}.yaml", headers=header, data=data_json)
-    try:
-        response.raise_for_status()
-    except HTTPError as upload_action_e:
-        print("Error while uploading action")
-        raise upload_action_e
-
-
 def get_file_action(header: 'dict[str,str]') -> str:
     """Gets action file form main repo
 
@@ -165,6 +138,33 @@ def get_sha(base_url, header, action_name) -> Union[str, None]:
         raise get_sha_e
     sha = response.json().get("sha")
     return sha
+
+
+def upload_action(base_url: str, header: 'dict[str,str]', action_name: str,
+                  content: str, sha: Union[str, None]) -> None:
+    """Uploads action file to github repo
+
+        Args:
+            base_url (str): The url to the repo
+            header (dict[str,str]): Header with auth token
+            action_name (str): The name of the action file
+            content (str): The content of the aciton file
+            sha (Union[str, None]): Sha of the action file, needed for updating the file
+
+        Raises:
+            upload_action_e: Raised when no aciton been uploaded
+    """
+    if sha is not None:
+        param = {"message": "Update action file", "content": content, "sha": sha}
+    else:
+        param = {"message": "Upload action file", "content": content}
+    data_json = json.dumps(param)
+    response = requests.put(base_url + f"contents/.github/workflows/{action_name}.yaml", headers=header, data=data_json)
+    try:
+        response.raise_for_status()
+    except HTTPError as upload_action_e:
+        print("Error while uploading action")
+        raise upload_action_e
 
 
 def main():
