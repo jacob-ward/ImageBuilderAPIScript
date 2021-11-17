@@ -1,4 +1,3 @@
-# pylint: disable=line-too-long
 """This script uploads image builder action to the desired github repo
     As well as uploading the most recent verion of the script it alos
     uploads secrets that are needed to run the script.
