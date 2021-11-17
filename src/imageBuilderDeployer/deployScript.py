@@ -14,7 +14,10 @@ from requests.models import HTTPError
 
 def get_config(path_to_config):
     config = configparser.ConfigParser()
-    config.read(os.path.join(os.getcwd(), path_to_config))
+    path = Path.cwd() / path_to_config
+    if not path.is_file():
+        raise FileNotFoundError(f"ConfigFileNotFound at location {path}")
+    config.read(path)
     try:
         config_github = dict(config.items("github"))
         secrets_dict = dict(config.items("secrets"))
@@ -94,16 +97,16 @@ def main():
         config_path = args.config
         try:
             secrets_dict, base_url, header, action_name = get_config(config_path)
-        except ValueError as e:
+        except (ValueError,FileNotFoundError) as e:
             print("Exception was caught during loading of config file, stopping")
-            print(e)
+            sys.exit(e)
     try:
         content = get_file_action(header)
         sha = get_sha(base_url,header,action_name)
         upload_action(base_url,header,action_name,content,sha)
         upload_secrets(secrets_dict, base_url,header)
     except HTTPError as e:
-        print(e)
+        sys.exit(e)
     else:
         print("Script and secrets were uploaded/updated.")
 
