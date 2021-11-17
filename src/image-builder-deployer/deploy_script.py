@@ -1,11 +1,9 @@
 import configparser
-import os
 from pathlib import Path, PosixPath, WindowsPath
 import sys
 from typing import Union
 import requests
 import json
-import base64
 import ast
 import argparse
 from base64 import b64encode
