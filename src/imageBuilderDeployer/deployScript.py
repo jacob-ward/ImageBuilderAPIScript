@@ -1,7 +1,8 @@
 import configparser
 import os
-from pathlib import Path
+from pathlib import Path, PosixPath, WindowsPath
 import sys
+from typing import Union
 import requests
 import json
 import base64
@@ -12,9 +13,9 @@ from nacl import encoding, public
 from requests.models import HTTPError
 
 
-def get_config(path_to_config):
-    config = configparser.ConfigParser()
-    path = Path.cwd() / path_to_config
+def get_config(path_to_config: Union[PosixPath, WindowsPath]) -> tuple:
+    config = configparser.ConfigParser() # type: configparser.ConfigParser
+    path = Path.cwd() / path_to_config # type: Path
     if not path.is_file():
         raise FileNotFoundError(f"ConfigFileNotFound at location {path}")
     config.read(path)
@@ -37,7 +38,7 @@ def encrypt(public_key: str, secret_value: str) -> str:
     encrypted = sealed_box.encrypt(secret_value.encode("utf-8"))
     return b64encode(encrypted).decode("utf-8")
 
-def upload_secrets(secrets, base_url, header):
+def upload_secrets(secrets: 'dict[str,str]', base_url: str, header: 'dict[str,str]') -> None:
     response = requests.get(base_url+"actionsasd/secrets/public-key",headers=header)
     try:
         response.raise_for_status()
@@ -55,7 +56,7 @@ def upload_secrets(secrets, base_url, header):
             print("Error while uploading secrets")
             raise e
 
-def upload_action(base_url,header,action_name,content,sha):
+def upload_action(base_url:str,header:'dict[str,str]',action_name: str,content: str,sha: Union[str, None]) -> None:
     if sha != None:
         param = {"message":"Update action file", "content":content, "sha":sha}
     else:
@@ -67,9 +68,8 @@ def upload_action(base_url,header,action_name,content,sha):
     except HTTPError as e:
         print("Error while uploading action")
         raise e
-    return response
 
-def get_file_action(header):
+def get_file_action(header: 'dict[str,str]') -> str:
     response = requests.get("https://api.github.com/repos/vovsike/ImageBuilderAPIScript/contents/action_raw.yaml", headers=header)
     try:
         response.raise_for_status()
@@ -79,7 +79,7 @@ def get_file_action(header):
     content = ast.literal_eval(response.content.decode("utf-8")).get("content")
     return content
 
-def get_sha(base_url, header, action_name):
+def get_sha(base_url, header, action_name) -> Union[str,None]:
     response = requests.get(base_url + f"contents/.github/workflows/{action_name}.yaml", headers=header)
     try:
         response.raise_for_status()
@@ -94,7 +94,7 @@ def main():
     parser.add_argument("config", help="path to config", type=Path)
     args = parser.parse_args()
     if args.config != None:
-        config_path = args.config
+        config_path = args.config # type: Path
         try:
             secrets_dict, base_url, header, action_name = get_config(config_path)
         except (ValueError,FileNotFoundError) as e:
