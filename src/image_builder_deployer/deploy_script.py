@@ -134,7 +134,7 @@ def get_sha(base_url, header, action_name) -> Union[str, None]:
         response.raise_for_status()
     except HTTPError as get_sha_e:
         print("Error geting sha of the action file")
-        raise get_sha_e
+        return None
     sha = response.json().get("sha")
     return sha
 
