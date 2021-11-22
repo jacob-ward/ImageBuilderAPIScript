@@ -75,7 +75,7 @@ def upload_secrets(secrets: 'dict[str,str]', base_url: str, header: 'dict[str, s
             public_key_e: Raised when no public key was retirved
             secret_upload_e: Raised when no secret was uplaoded
     """
-    response = requests.get(base_url + "actionsasd/secrets/public-key", headers=header)
+    response = requests.get(base_url + "actions/secrets/public-key", headers=header)
     try:
         response.raise_for_status()
     except HTTPError as public_key_e:
