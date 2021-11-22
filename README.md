@@ -1,5 +1,10 @@
-# Installation
-TODO
+# Installation QUICK START
+To install this script from source clone this repo using `git clone`. after cloning the repo make sure that all python requirements are met. Install all python packages that are needed for buildibng from source; On linux run: <br/>
+`apt update` <br/>
+`apt install python3-pip` <br/>
+`apt install python3-venv` <br/>
+`pip3 install build` <br/>
+After that the script should be ready for build. To build it use `python -m build -s` from the repo root directory. After build just run `pip3 install dist/imageBuilderDeployer-<version number>.tar.gz` and it should be ready for use. 
 
 ## Supported versions
 To build and rus this package you will need to use python >=3.6
