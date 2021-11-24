@@ -41,13 +41,16 @@ def get_config(path_to_config: Union[PosixPath, WindowsPath]) -> tuple:
         github_tocken=config.get("github","access_token")
     except configparser.NoSectionError as no_section_e:
         raise ValueError("Wrong config file, no sections github or secrets") from no_section_e
+    # URL must be in URL encoded format
     url = f"https://gitlab.stfc.ac.uk/api/v4/projects/{main_config.get('project_url')}%2F{main_config.get('project_name')}"
     header = {"PRIVATE-TOKEN":f"{main_config.get('access_token')}"}
     action_name = main_config.get("action_name")
     return secrets_dict, url, header, action_name, github_tocken
 
 def upload_secrets(secrets: 'dict[str,str]', base_url: str, header: 'dict[str, str]') -> None:
-    """Uploads encrypted secret to github repo
+    """Uploads encrypted secret to gitlab repo,
+        if no secret found in the repo this funciton will
+        upload a secret, if it was found it will update it
 
         Args:
             secrets (dict[str,str]): Secret to be uploaded
@@ -77,7 +80,7 @@ def get_file_action(github_token: str) -> str:
     """Gets action file form main repo
 
         Args:
-            header (dict[str,str]): Header with auth token
+            github_token (str): Github token to be used within header
 
         Raises:
             get_aciton_file_e: Raised when no aciton file was collected
@@ -87,10 +90,7 @@ def get_file_action(github_token: str) -> str:
     """
     header = {
         "Authorization": f"token {github_token}"}
-    #TODO
-    #! CHANGE TO MAIN BRANCH AFTER WHEN FINSIEHD TESTING
-    #TODO
-    response = requests.get("https://api.github.com/repos/vovsike/ImageBuilderAPIScript/contents/.gitlab-ci.yml?ref=support_gitlab", headers=header)
+    response = requests.get("https://api.github.com/repos/vovsike/ImageBuilderAPIScript/contents/.gitlab-ci.yml", headers=header)
     try:
         response.raise_for_status()
     except HTTPError as get_aciton_file_e:
@@ -101,7 +101,9 @@ def get_file_action(github_token: str) -> str:
 
 
 def upload_action(base_url: str, header: 'dict[str,str]', content: str, action_name: str) -> None:
-    """Uploads action file to github repo
+    """Uploads action file to gitlab repo,
+        if cicd file exists this function will update it,
+        if not this function will upload it
 
         Args:
             base_url (str): The url to the repo
