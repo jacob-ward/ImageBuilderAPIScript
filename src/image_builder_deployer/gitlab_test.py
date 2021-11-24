@@ -127,19 +127,14 @@ def upload_action(base_url: str, header: 'dict[str,str]', content: str, action_n
         print("Error while uploading action")
         raise upload_action_e
 
-def main():
+def main(config_path):
     """Main method
     """
-    parser = argparse.ArgumentParser()
-    parser.add_argument("config", help="path to config", type=Path)
-    args = parser.parse_args()
-    if args.config is not None:
-        config_path = args.config  # type: Path
-        try:
-            secrets_dict, base_url, header, action_name, github_token = get_config(config_path)
-        except (ValueError, FileNotFoundError) as config_error:
-            print("Exception was caught during loading of config file, stopping")
-            sys.exit(config_error)
+    try:
+        secrets_dict, base_url, header, action_name, github_token = get_config(config_path)
+    except (ValueError, FileNotFoundError) as config_error:
+        print("Exception was caught during loading of config file, stopping")
+        sys.exit(config_error)
     try:
         content = get_file_action(github_token)
         upload_action(base_url,header,content,action_name)
