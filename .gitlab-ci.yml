@@ -1,0 +1,15 @@
+image: docker:19.03.13
+
+variables:
+  DOCKER_TLS_CERTDIR: "/certs"
+
+services:
+  - docker:19.03.13-dind
+
+build:
+  stage: build
+  before_script:
+    - echo "$HARBOR_TOKEN" | docker login $DOCKER_REGISTRY --username $DOCKER_USERNAME --password-stdin
+  script:
+    - for dockerPath in $(find -name Dockerfile); do dockerImageName=$(dirname $dockerPath| xargs basename); docker build . -t harbor.stfc.ac.uk/image-builder-testing/$dockerImageName:latest -f $dockerPath; done
+    - for dockerPath in $(find -name Dockerfile); do dockerImageName=$(dirname $dockerPath| xargs basename); docker push harbor.stfc.ac.uk/image-builder-testing/$dockerImageName:latest; done
