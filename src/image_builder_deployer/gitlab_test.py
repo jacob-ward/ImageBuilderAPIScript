@@ -111,14 +111,21 @@ def upload_action(base_url: str, header: 'dict[str,str]', content: str, action_n
         Raises:
             upload_action_e: Raised when no aciton been uploaded
     """
-    data = {"commit_message": "Update CI file", "content": content,"branch":"master"}
-    response = requests.post(base_url + f"/repository/files/%2E{action_name}%2Eyml", headers=header, data=data)
+    data = {"commit_message": "Upload CI file", "content": content,"branch":"master"}
+    response = requests.get(base_url + f"/repository/files/%2E{action_name}%2Eyml?ref=master",headers=header)
+    try:
+        response.raise_for_status()
+    except HTTPError as no_CI_file_found:
+        data = {"commit_message": "Upload CI file", "content": content, "branch":"master"}
+        response = requests.post(base_url + f"/repository/files/%2E{action_name}%2Eyml", headers=header, data=data)
+    else:
+        data = {"commit_message": "update CI file", "content": content, "branch":"master"}
+        response = requests.put(base_url + f"/repository/files/%2E{action_name}%2Eyml", headers=header, data=data)
     try:
         response.raise_for_status()
     except HTTPError as upload_action_e:
         print("Error while uploading action")
         raise upload_action_e
-
 
 def main():
     """Main method
