@@ -1,4 +1,3 @@
-import shutil
 import configparser
 import pathlib
 
