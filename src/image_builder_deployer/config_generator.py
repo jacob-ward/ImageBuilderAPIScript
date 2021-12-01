@@ -22,9 +22,9 @@ def write_to_config(config : configparser.ConfigParser , values_to_write) -> Non
     with open(new_path,"w") as f:
         config.write(f)
 
-def main() -> None:
+def main(path_to_config_template) -> None:
     config = configparser.ConfigParser()
-    path = pathlib.Path.cwd() / "config" / "config_template.ini"
+    path = pathlib.Path.cwd() / path_to_config_template
     config.read(path)
     values_to_write = get_parameters()
     write_to_config(config,values_to_write)
