@@ -18,14 +18,14 @@ def get_parameters() -> dict:
     secrets["harbor_token"] = getpass.getpass("Harbor access token: ")
     return github_params, secrets
 
-def write_to_config(config : configparser.ConfigParser , github_params : "dict[str:str]", secrets_params: "dict[str:str]") -> None:
+def write_to_config(config : configparser.ConfigParser , github_params : "dict[str:str]", secrets_params: "dict[str:str]",path_to_config: pathlib.Path) -> None:
     """This functions creates a config file from parameters supplied
 
     Args:
         config (configparser.ConfigParser): The config tempalte that is used to create config
         values_to_write (list[str]): the values to populate config with
     """
-    new_path = pathlib.Path.cwd() / "config" / "config.ini"
+    path = pathlib.Path.cwd() + path_to_config
     if github_params is not None:
         config.add_section("github")
         for key, item in github_params.items():
@@ -34,15 +34,15 @@ def write_to_config(config : configparser.ConfigParser , github_params : "dict[s
         config.add_section("secrets")
         for key, item in secrets_params.items():
             config.set("secrets",key,item)
-    with open(new_path,"w") as f:
+    with open(path,"w") as f:
         config.write(f)
 
-def main() -> None:
+def main(path) -> None:
     """Main function
     """
     config = configparser.ConfigParser()
     github_params,secrets_params = get_parameters()
-    write_to_config(config,github_params,secrets_params)
+    write_to_config(config,github_params,secrets_params,path)
 
 
 if __name__ == "__main__":
