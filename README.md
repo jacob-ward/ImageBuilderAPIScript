@@ -1,4 +1,6 @@
-# Installation QUICK START
+# Installation
+To install this package from PyPi using pip just run `pip install image-builder-deployer`. If you want to build from source from GitRepo please follow [this](#build-from-source)
+
 To install this script from source clone this repo using `git clone`. after cloning the repo make sure that all python requirements are met. Install all python packages that are needed for buildibng from source; On linux run: <br/>
 `apt update` <br/>
 `apt install python3-pip` <br/>
@@ -9,7 +11,7 @@ After that the script should be ready for build. To build it use `python -m buil
 ## Supported versions
 To build and rus this package you will need to use python >=3.6
 
-## How to build
+## <a name = "build-from-source"> </a> Build from source
 To build this python package you will need to have python build installed as a package. To do this please run `python -m pip install build`. To build ImageBuilderAPI navigate to root directory of this repo and run `python -m build`. When build finfishes new directory will appear name `dist`
 
 ## How to install
