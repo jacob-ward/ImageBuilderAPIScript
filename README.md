@@ -19,4 +19,10 @@ This script can generate a config file for you. To do this run `python -m image_
 To run use `python -m image_builder_deployer <remote Github or Girlab> <path_to_your_config_file>` and it should just work.
 
 ## Troubleshooting
-TODO
+### Config file loading
+- `ConfigFileNotFound` this error will occur if the config file location that is provided as an argument as not found. To overcome this error check that config file exist at the location specified. Please be aware that the path to the config file should be relative to where you run the script from
+- `WrongConfigFile` this error will occur if the config file format is different to the template one. If this error occurs please check that your config file follows same structure as template, you can also try to [generate](#generate) config file.
+- `GetPublicKey` this error will occur if scritp can't retrive public key from github. This is ussualy becuase access key provided lucks such permissions. Permissions needed are `admin:public_key read`
+- `GetActionFile` this error will occur if action file is no available, if this happends, please check that you have provided correct github token. If the token is up-to-date and correct please contact the owner of this repo.
+- `ShaError` this error will occur of no sha was retrived from the action file. This can happen when first time uploading an action as the repo will not contain any action files. If this happens during the update of an action please check that github token is valid and correct.
+- `UploadAction` this error will occur of uploading of the action failed. This is ussualy the permission error. Please check that GitHub token is correct and up-to-date.
