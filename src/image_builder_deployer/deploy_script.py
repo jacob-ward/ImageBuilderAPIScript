@@ -41,7 +41,7 @@ def get_config(path_to_config: Union[PosixPath, WindowsPath]) -> tuple:
         raise ValueError("Wrong config file, no sections github or secrets") from no_section_e
     url = f"https://api.github.com/repos/{config_github.get('repo_owner')}/{config_github.get('repo_name')}/"
     header = {
-        "Authorization": f"token {config_github.get('access_token')}"}
+        "Authorization": f"token {config_github.get('github_token')}"}
     action_name = config_github.get("action_name")
     return secrets_dict, url, header, action_name
 
