@@ -13,7 +13,7 @@ To install package after building from source simply run `python -m pip install 
 ## Configuration
 Before using this script it needs a configuration file, the template for this file can be found in `config/config_template`. Simply fill in the template file and store it somewhere in your system.
 ### Generate
-This script can generate a config file for you. To do this run `python -m image_builder_deployer -g` to start config generation procedure. After that follow enter data when prompted. Attention secret values are masked.
+This script can generate a config file for you. To do this run `python -m image_builder_deployer -g <path_where_config_will_be_saved>` to start config generation procedure. Enter data when prompted. <b>Attention secret values are masked</b>.
 
 ## How to run this package
 To run use `python -m image_builder_deployer <remote Github or Girlab> <path_to_your_config_file>` and it should just work.
