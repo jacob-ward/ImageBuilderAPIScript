@@ -25,7 +25,7 @@ def write_to_config(config : configparser.ConfigParser , github_params : "dict[s
         config (configparser.ConfigParser): The config tempalte that is used to create config
         values_to_write (list[str]): the values to populate config with
     """
-    path = pathlib.Path.cwd() + path_to_config
+    path = pathlib.Path.cwd() / path_to_config
     if github_params is not None:
         config.add_section("github")
         for key, item in github_params.items():
@@ -43,7 +43,3 @@ def main(path) -> None:
     config = configparser.ConfigParser()
     github_params,secrets_params = get_parameters()
     write_to_config(config,github_params,secrets_params,path)
-
-
-if __name__ == "__main__":
-    main()
